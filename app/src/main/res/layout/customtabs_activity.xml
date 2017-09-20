@@ -16,6 +16,6 @@
         android:id="@+id/tvCustomTabsLinkInText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:autoLink="web"
-        android:text="Your link is: https://www.mkyong.com/java8/java-display-all-zoneid-and-its-utc-offset/"/>
+        android:autoLink="web|phone"
+        android:text="Your link is: https://www.mkyong.com/java8 +380991912255"/>
 </LinearLayout>

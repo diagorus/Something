@@ -1,7 +1,7 @@
 package com.fuh.something
 
 import android.app.Application
-import com.fuh.something.models.MyObjectBox
+//import com.fuh.something.models.MyObjectBox
 import com.jakewharton.threetenabp.AndroidThreeTen
 import io.objectbox.BoxStore
 import timber.log.Timber
@@ -30,7 +30,7 @@ class App : Application() {
     }
 
     private fun initObjectBox() {
-        boxStore = MyObjectBox.builder().androidContext(this).build()
+//        boxStore = MyObjectBox.builder().androidContext(this).build()
     }
 
     private fun initTreeTen() {

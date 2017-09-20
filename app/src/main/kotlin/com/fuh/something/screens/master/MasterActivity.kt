@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.master_activity.*
 import org.threeten.bp.Instant
 import com.fuh.something.App
 import com.fuh.something.models.Model
-import com.fuh.something.models.Model_
+//import com.fuh.something.models.Model_
 import io.objectbox.Box
 import io.objectbox.query.Query
 
@@ -36,7 +36,7 @@ class MasterActivity : BaseToolbarActivity() {
         modelsAdapter = MasterAdapter(R.layout.master_item)
 
         modelsBox = (application as App).boxStore.boxFor(Model::class.java)
-        modelsQuery = modelsBox.query().order(Model_.text).build()
+//        modelsQuery = modelsBox.query().order(Model_.text).build()
         rvMasterModels.adapter = modelsAdapter
         rvMasterModels.layoutManager = LinearLayoutManager(this)
 

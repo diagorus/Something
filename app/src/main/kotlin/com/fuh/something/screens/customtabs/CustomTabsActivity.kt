@@ -1,7 +1,5 @@
 package com.fuh.something.screens.customtabs
 
-import android.app.PendingIntent
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.ActionBar
@@ -11,9 +9,13 @@ import kotlinx.android.synthetic.main.customtabs_activity.*
 import android.support.customtabs.CustomTabsIntent
 import android.support.v4.content.ContextCompat
 import android.content.Intent
-import android.text.util.Linkify
+import android.text.method.LinkMovementMethod
 import com.fuh.something.utils.customtabs.CustomTabActivityHelper
 import com.fuh.something.utils.extensions.createBitmapFromVector
+import com.fuh.something.utils.weblincks.LinkTransformationMethod
+import android.text.util.Linkify
+
+
 
 /**
  * Created by nick on 19.09.17.
@@ -34,6 +36,11 @@ class CustomTabsActivity: BaseToolbarActivity() {
 
         val link = "https://github.com/"
 
+        tvCustomTabsLinkInText.transformationMethod = LinkTransformationMethod(
+                this,
+                Linkify.WEB_URLS or Linkify.PHONE_NUMBERS
+        )
+
         btnCustomTabsGoToLink.setOnClickListener {
             val pendingIntentShare =
                     CustomTabsActionBroadcastReceiver.getCreatePendingForAction(this, CustomTabsActionBroadcastReceiver.Action.SHARE)
@@ -41,23 +48,25 @@ class CustomTabsActivity: BaseToolbarActivity() {
             val pendingIntentCopyLink =
                     CustomTabsActionBroadcastReceiver.getCreatePendingForAction(this, CustomTabsActionBroadcastReceiver.Action.COPY_LINK)
 
-            val icon = createBitmapFromVector(R.drawable.ic_share_black_24dp)
+            val shareIcon = createBitmapFromVector(R.drawable.ic_share_black_24dp)
+            val closeIcon = createBitmapFromVector(R.drawable.ic_arrow_back_white_24dp)
 
             val customTabsIntent = CustomTabsIntent.Builder()
                     .enableUrlBarHiding()
                     .setShowTitle(true)
-                    .setActionButton(icon, "Share link", pendingIntentShare, true)
+                    .setActionButton(shareIcon, "Share link", pendingIntentShare, true)
+                    .setCloseButtonIcon(closeIcon)
                     .addMenuItem("Copy link", pendingIntentCopyLink)
                     .setToolbarColor(ContextCompat.getColor(this, R.color.black))
                     .setSecondaryToolbarColor(ContextCompat.getColor(this, R.color.white))
+                    .setStartAnimations(applicationContext, R.anim.slide_in_right, R.anim.slide_out_left)
+                    .setExitAnimations(applicationContext, android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                     .build()
 
             CustomTabActivityHelper.openCustomTab(this, customTabsIntent, Uri.parse(link)) { activity, uri ->
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 activity.startActivity(intent)
             }
-
-//            Linkify.addLinks(tvCustomTabsLinkInText, Linkify.WEB_URLS)
         }
     }
 

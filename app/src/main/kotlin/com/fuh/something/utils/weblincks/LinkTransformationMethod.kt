@@ -1,22 +1,19 @@
 package com.fuh.something.utils.weblincks
 
+import android.app.Activity
 import android.graphics.Rect
 import android.text.Spannable
 import android.text.Spanned
 import android.text.method.TransformationMethod
 import android.text.style.URLSpan
-import android.text.util.Linkify
+import android.util.Patterns
 import android.view.View
 import android.widget.TextView
 
-/**
- * Created by Nikola D. on 12/23/2015.
- */
-class LinkTransformationMethod : TransformationMethod {
+class LinkTransformationMethod(private val activity: Activity) : TransformationMethod {
 
     override fun getTransformation(source: CharSequence, view: View): CharSequence {
         if (view is TextView) {
-            Linkify.addLinks(view, Linkify.WEB_URLS)
             if (view.text == null || view.text !is Spannable) {
                 return source
             }
@@ -27,15 +24,24 @@ class LinkTransformationMethod : TransformationMethod {
                 val start = text.getSpanStart(oldSpan)
                 val end = text.getSpanEnd(oldSpan)
                 val url = oldSpan.url
+                if (!Patterns.WEB_URL.matcher(url).matches()) {
+                    continue
+                }
                 text.removeSpan(oldSpan)
-                text.setSpan(CustomTabsURLSpan(url), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                text.setSpan(CustomTabsURLSpan(activity, url), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
             return text
         }
         return source
     }
 
-    override fun onFocusChanged(view: View, sourceText: CharSequence, focused: Boolean, direction: Int, previouslyFocusedRect: Rect) {
-
+    override fun onFocusChanged(
+            view: View,
+            sourceText: CharSequence,
+            focused: Boolean,
+            direction: Int,
+            previouslyFocusedRect: Rect
+    ) {
+        // DO NOTHING
     }
 }
