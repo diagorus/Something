@@ -68,7 +68,7 @@ buildscript {
     ext {
         support_version = '26.0.2'
         constraint_layout_version = '1.0.2'
-        custom_tabs_version = '25.3.1'
+        custom_tabs_version = '25.3.2'
         retrofit_version = '2.3.0'
         okhttp_version = '3.8.1'
         rxjava2_version = '2.1.3'

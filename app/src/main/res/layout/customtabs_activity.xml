@@ -13,8 +13,9 @@
         android:text="Go to Ebanoe" />
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/btnCustomTabsLinkInText"
+        android:id="@+id/tvCustomTabsLinkInText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:autoLink="web"
         android:text="Your link is: https://www.mkyong.com/java8/java-display-all-zoneid-and-its-utc-offset/"/>
 </LinearLayout>

@@ -11,13 +11,17 @@ import kotlinx.android.synthetic.main.customtabs_activity.*
 import android.support.customtabs.CustomTabsIntent
 import android.support.v4.content.ContextCompat
 import android.content.Intent
+import android.text.util.Linkify
 import com.fuh.something.utils.customtabs.CustomTabActivityHelper
+import com.fuh.something.utils.extensions.createBitmapFromVector
 
 /**
  * Created by nick on 19.09.17.
  */
 
 class CustomTabsActivity: BaseToolbarActivity() {
+
+    private val customTabActivityHelper: CustomTabActivityHelper = CustomTabActivityHelper()
 
     override fun getLayoutId(): Int = R.layout.customtabs_activity
 
@@ -28,43 +32,44 @@ class CustomTabsActivity: BaseToolbarActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val link = "https://github.com/"
+
         btnCustomTabsGoToLink.setOnClickListener {
-            val requestCode = 100
+            val pendingIntentShare =
+                    CustomTabsActionBroadcastReceiver.getCreatePendingForAction(this, CustomTabsActionBroadcastReceiver.Action.SHARE)
 
-            val sendIntent = Intent()
-                    .apply {
-                        action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_TEXT, "This is my text to send.")
-                        type = "text/plain"
-                    }
-            val chooserIntent = Intent.createChooser(sendIntent, "Share link")
-            val pendingIntent = PendingIntent.getActivity(this, requestCode, chooserIntent, PendingIntent.FLAG_ONE_SHOT)
+            val pendingIntentCopyLink =
+                    CustomTabsActionBroadcastReceiver.getCreatePendingForAction(this, CustomTabsActionBroadcastReceiver.Action.COPY_LINK)
 
-            val icon = BitmapFactory.decodeResource(resources, R.drawable.ic_share_black_24dp)
+            val icon = createBitmapFromVector(R.drawable.ic_share_black_24dp)
 
             val customTabsIntent = CustomTabsIntent.Builder()
                     .enableUrlBarHiding()
                     .setShowTitle(true)
-                    .setActionButton(icon, "Share link", pendingIntent, true)
-//                    .addMenuItem()
+                    .setActionButton(icon, "Share link", pendingIntentShare, true)
+                    .addMenuItem("Copy link", pendingIntentCopyLink)
                     .setToolbarColor(ContextCompat.getColor(this, R.color.black))
                     .setSecondaryToolbarColor(ContextCompat.getColor(this, R.color.white))
                     .build()
 
-            CustomTabActivityHelper.openCustomTab(this, customTabsIntent, Uri.parse("https://github.com/")) { activity, uri ->
+            CustomTabActivityHelper.openCustomTab(this, customTabsIntent, Uri.parse(link)) { activity, uri ->
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 activity.startActivity(intent)
             }
+
+//            Linkify.addLinks(tvCustomTabsLinkInText, Linkify.WEB_URLS)
         }
     }
 
     override fun onStart() {
         super.onStart()
 
-
+        customTabActivityHelper.bindCustomTabsService(this)
     }
 
     override fun onStop() {
         super.onStop()
+
+        customTabActivityHelper.unbindCustomTabsService(this)
     }
 }
